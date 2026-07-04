@@ -104,7 +104,7 @@ export default function FirestoreTest() {
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.label} htmlFor="test-message">
-          Test message
+          Test message , How are you?
         </label>
         <div className={styles.formRow}>
           <input
