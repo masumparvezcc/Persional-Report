@@ -1,13 +1,10 @@
-import {
-  buildTestReply,
-  sendTelegramMessage,
-  verifyWebhookSecret,
-} from "@/lib/telegram";
+import { handleTelegramUpdate } from "@/lib/notes/handlers";
+import { verifyWebhookSecret } from "@/lib/telegram";
 
 export async function GET() {
   return Response.json({
     ok: true,
-    message: "Telegram webhook endpoint is ready",
+    message: "Telegram note-taking webhook is ready",
     path: "/api/telegram/webhook",
   });
 }
@@ -25,15 +22,8 @@ export async function POST(request) {
     return Response.json({ ok: false, error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const message = update.message ?? update.edited_message;
-
-  if (!message?.text || message.chat?.id == null) {
-    return Response.json({ ok: true, ignored: true });
-  }
-
   try {
-    const reply = buildTestReply(message.text.trim());
-    await sendTelegramMessage(message.chat.id, reply);
+    await handleTelegramUpdate(update);
   } catch (error) {
     console.error("Telegram webhook error:", error);
     return Response.json(
